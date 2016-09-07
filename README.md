@@ -31,15 +31,13 @@ The first 36 values in the vector come from the block in the top left corner of 
 
 Before unwinding the values to a vector, each block is represented as a 3D dimensional matrix, 2x2x9, corresponding to the four cells in a block with their histogram values in the third dimension. To unwind this matrix into a vector, I use the colon operator ':', e.g., A(:).  You can reshape the values into a 3D matrix using the 'reshape' command. For example:
 
-{% highlight matlab %}
-
+```matlab
 % Get the top left block from the descriptor.
 block1 = H(1:36);
 
 % Reshape the values into a 2x2x9 matrix B1.
 B1 = reshape(block1, 2, 2, 9);
-
-{% endhighlight %}
+```
 
 **Send your feedback**
 
