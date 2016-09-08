@@ -59,7 +59,7 @@ H = [];
 % Verify the image size is 66 x 130.
 [height, width] = size(img); 
 if ((width ~= 66) || (height ~= 130))
-    disp("Image size must be 130 x 66 pixels (128x64 with 1px border).\n");
+    disp('Image size must be 130 x 66 pixels (128x64 with 1px border).\n');
     return;
 end
 
@@ -77,8 +77,8 @@ hx = [-1,0,1];
 hy = hx';
 
 % Compute the derivative in the x and y direction for every pixel.
-dx = imfilter(double(img), hx);
-dy = imfilter(double(img), hy);
+dx = filter2(hx, double(img));
+dy = filter2(hy, double(img));
 
 % Remove the 1 pixel border.
 dx = dx(2 : (size(dx, 1) - 1), 2 : (size(dx, 2) - 1));

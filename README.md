@@ -1,27 +1,25 @@
 # hog_matlab
 Matlab implementation of the HOG descriptor for pedestrian detection
 
-To help in my understanding of the HOG descriptor, as well as to allow me to easily test out modifications to the descriptor, I wrote functions in Octave for computing the HOG descriptor for a detection window.
+To help in my understanding of the HOG descriptor, as well as to allow me to easily test out modifications to the descriptor, I wrote functions in Matlab for computing the HOG descriptor for a detection window.
 
 **HOG Tutorial**
 
 For a tutorial on the HOG descriptor, check out my [HOG tutorial post](http://mccormickml.com/2013/05/09/hog-person-detector-tutorial/).
 
-**Source files**
+**Key Source Files**
 
 `getHOGDescriptor.m` - Computes the HOG descriptor for a 66x130 pixel image / detection window. The detection window is actually 64x128 pixels, but an extra pixel is required on all sides for computing the gradients.
 
-`getHistogram.m` - Computes a single 9-bin histogram for a cell. Used by 'getHOGDescriptor'.
+`train_detector.m` - Trains a linear SVM on the ~2.2k pre-cropped windows in the `/Images/Training/` folder.
 
-Octave code is compatible with MATLAB, so you should also be able to run these functions in MATLAB.
-
-**Differences with OpenCV implementation**
+**Differences with OpenCV Implementation**
 	
 * OpenCV uses L2 hysteresis for the block normalization.
-* OpenCV weights each pixel in a block with a gaussian distribution before normalizing the block.
+* OpenCV weights each pixel in a block with a Gaussian distribution before normalizing the block.
 * The sequence of values produced by OpenCV does not match the order of the values produced by this code.
 
-**Order of values**
+**Order of Values**
 
 You may not need to understand the order of bytes in the final vector in order to work with it, but if you're curious, here's a description.
 
