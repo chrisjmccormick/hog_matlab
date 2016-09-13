@@ -29,14 +29,9 @@ function [resultRects] = searchImage(hog, origImg)
 	for i = 1 : length(scaleRange)
 
 		% Get the next scale value.
-		scale = scaleRange(i);
-
-        % Print the number of matches from the search at the previous scale.
-        if i ~= 1
-            fprintf('%d matches\n', size(resultRects, 1));
-        end
+		scale = scaleRange(i);    
         
-		fprintf('  Image Scale %.2f (%d / %d) - ', scale, i, length(scaleRange));
+		fprintf('  Image Scale %.2f - ', scale);
 		
 		% Scale the image.
 		if (scale == 1)
@@ -137,7 +132,9 @@ function [resultRects] = searchImage(hog, origImg)
 			end
 			
 			cellRow = cellRow + 1;
-		end
+        end
+        
+        fprintf('%d matches total, %.0f%% done\n', size(resultRects, 1), windowCountImg / totalWindows * 100.0);
 	end
 
 % End function
