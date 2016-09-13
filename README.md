@@ -1,7 +1,13 @@
 # hog_matlab
-Matlab implementation of the HOG descriptor for pedestrian detection
+Matlab implementation of the HOG person detector. 
 
-To help in my understanding of the HOG descriptor, as well as to allow me to easily test out modifications to the descriptor, I wrote functions in Matlab for computing the HOG descriptor for a detection window.
+I originally created this project to experiment with different ways to modify the descriptor to reduce the dimensionality with minimal loss in accuracy.
+
+Some things you should know going into this:
+
+* The HOG detector is compute intense, and this is *not* a highly-optimized implementation.
+* The primary value in this code, I think, is to use it to learn about the HOG detector. 
+  * The code is well documented, and Matlab syntax makes the operations fairly plain.
 
 **HOG Tutorial**
 
