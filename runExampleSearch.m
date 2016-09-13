@@ -8,7 +8,7 @@ load('hog_model.mat');
 % -1 for non-persons and +1 for persons, so 0 would be the natural
 % threshold. However, the detector is highly susceptible to false
 % positives, so I'm using a higher threshold value here.
-hog.threshold = 0.0;
+hog.threshold = 0.2;
 
 % Read in the image to be searched.
 img = imread('./Images/Validation/IMG_0003.jpg');

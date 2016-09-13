@@ -28,9 +28,17 @@ function [resultRects] = searchImage(hog, origImg)
 
 	% For each of the image scales...
 	for i = 1 : length(scaleRange)
-
+        
 		% Get the next scale value.
 		scale = scaleRange(i);    
+
+        % Stop the search if this scale is too small to fit even a single 
+        % window.
+        if (windowCounts(i) == 0)
+           fprintf('  Image scale %.2f is not large enough for descriptor, stopping search.\n', scale);
+           break;
+        end
+
         
 		fprintf('  Image Scale %.2f, %d windows - ', scale, windowCounts(i));
 		
@@ -139,7 +147,7 @@ function [resultRects] = searchImage(hog, origImg)
 			cellRow = cellRow + 1;
         end
         
-        fprintf('%d matches total, %.0f%% done\n', size(resultRects, 1), windowCountImg / totalWindows * 100.0);
+        fprintf('%d matches total, %.1f%% done\n', size(resultRects, 1), windowCountImg / totalWindows * 100.0);
         assert(windowsAtScale == windowCounts(i));
 	end
 
