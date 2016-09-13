@@ -1,11 +1,9 @@
-function windowCounts = countWindows(img, scaleRange)
-	% The detector size in number of cells.
-	horizCellsPerWindow = 8;
-	vertCellsPerWindow = 16;
-    cellSize = 8;
+function windowCounts = countWindows(hog, img, scaleRange)
 	
 	% Get the image dimensions.
-    [origImgHeight, origImgWidth] = size(img);
+    % Make sure to read all three dimensions, or 'origImgWidth' will be 
+    % wrong.
+    [origImgHeight, origImgWidth, depth] = size(img);
 	
 	% Initialize the windowCounts array.
 	windowCounts = zeros(1, length(scaleRange));
@@ -21,20 +19,20 @@ function windowCounts = countWindows(img, scaleRange)
         imgHeight = origImgHeight * scale;
     
         % Compute the number of cells horizontally and vertically for the image.
-        numHorizCells = floor((imgWidth - 2) / cellSize);
-        numVertCells = floor((imgHeight - 2) / cellSize);
+        numHorizCells = floor((imgWidth - 2) / hog.cellSize);
+        numVertCells = floor((imgHeight - 2) / hog.cellSize);
         
         % Break the loop when the image is too small to fit a window.
-        if ((numHorizCells < horizCellsPerWindow) || ...
-            (numVertCells < vertCellsPerWindow))
+        if ((numHorizCells < hog.numHorizCells) || ...
+            (numVertCells < hog.numVertCells))
             break;
         end
         
         % The number of windows is not quite equal to the number of cells, since
         % you have to stop when the edge of the detector window hits the edge of
         % the image.
-        numHorizWindows = numHorizCells - horizCellsPerWindow + 1;
-        numVertWindows = numVertCells - vertCellsPerWindow + 1;
+        numHorizWindows = numHorizCells - hog.numHorizCells + 1;
+        numVertWindows = numVertCells - hog.numVertCells + 1;
         
         % Compute the number of windows at this image scale.
         windowCounts(1, i) = numHorizWindows * numVertWindows;        

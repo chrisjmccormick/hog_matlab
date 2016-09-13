@@ -18,7 +18,8 @@ function [resultRects] = searchImage(hog, origImg)
 	end
 		  
 	% Count the total number of windows to be searched.
-	totalWindows = sum(countWindows(origImg, scaleRange));
+    windowCounts = countWindows(hog, origImg, scaleRange);
+	totalWindows = sum(windowCounts);
 
 	fprintf('Searching %d detection windows...\n', totalWindows);
 
@@ -31,18 +32,20 @@ function [resultRects] = searchImage(hog, origImg)
 		% Get the next scale value.
 		scale = scaleRange(i);    
         
-		fprintf('  Image Scale %.2f - ', scale);
+		fprintf('  Image Scale %.2f, %d windows - ', scale, windowCounts(i));
 		
 		% Scale the image.
 		if (scale == 1)
 			img = origImg;
 		else
 			img = imresize(origImg, scale);
-		end
-		
+        end
+		        
 		% Convert to grayscale by averaging the three color channels.
 		img = mean(img, 3);
 		
+        windowsAtScale = 0;
+        
 		% ================================================
 		%          Compute Histograms Over Image
 		% ================================================
@@ -127,6 +130,8 @@ function [resultRects] = searchImage(hog, origImg)
 				% Increment the count of windows processed.
 				windowCountImg = windowCountImg + 1;
 
+                windowsAtScale = windowsAtScale + 1;
+                
 				% Move to the next column of the image.
 				cellCol = cellCol + 1;
 			end
@@ -135,6 +140,7 @@ function [resultRects] = searchImage(hog, origImg)
         end
         
         fprintf('%d matches total, %.0f%% done\n', size(resultRects, 1), windowCountImg / totalWindows * 100.0);
+        assert(windowsAtScale == windowCounts(i));
 	end
 
 % End function
