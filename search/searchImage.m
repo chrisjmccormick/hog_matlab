@@ -1,10 +1,40 @@
 function [resultRects] = searchImage(hog, origImg)
 %SEARCHIMAGE Applys a HOG person detector to find persons in the image.
+%  This function searches the supplied image for persons at multiple 
+%  scales. 
 %
-% Parameters:
-%   hog -     Structure defining the HOG detector. 
-%             It must also include a trained linear detector in hog.theta.
-%   origImg - The image to be searched.
+%  The HOG descriptor window is never resized--instead, the image is 
+%  resized. We rescale the image many times--each image scale is 5% smaller
+%  than the previous one. We repeat this until the resulting image is too 
+%  small to fit even a single descriptor. At image scale 1.00 (the 
+%  largest), we are looking for persons who are small within in the image 
+%  (farther from the camera). At the smaller image scales (e.g., 0.20), we 
+%  are looking for persons who appear larger in the image (closer to the 
+%  camera).
+%
+%  For each scale, the image is resized (downsampled), then HOG descriptors
+%  are calculated for every possible detection window in the resized image.
+%  The HOG descriptors are fed to the linear classifier to determine
+%  whether their detection window contains a person. The detection window
+%  is a match if the classifier confidence is above hog.threshold.   
+%
+%  NOTE: This function does not currently support variable detection window
+%        strides. The window is stepped by 1 pixel in each direction.
+%
+%  Parameters:
+%    hog             - Structure defining the HOG detector. 
+%      hog.theta     - Trained linear classifier.
+%      hog.threshold - Detect person if confidence > hog.threshold.
+%    origImg         - The image to be searched.
+%
+%  Returns:
+%    resultRects - A matrix of all the rectangular detection windows which
+%                  were identified as persons. Each result is a row vector:
+%                    [top-left-x, top-left-y, width, height, p]
+%                  The coordinates and dimensions of the detection windows 
+%                  are supplied relative to the original image dimensions.
+%                  The value 'p' is the output of the linear classifier 
+%                  (the classifier confidence).
 
 	% Save all of the results
 	resultRects = [];
@@ -38,7 +68,6 @@ function [resultRects] = searchImage(hog, origImg)
            fprintf('  Image scale %.2f is not large enough for descriptor, stopping search.\n', scale);
            break;
         end
-
         
 		fprintf('  Image Scale %.2f, %d windows - ', scale, windowCounts(i));
 		
@@ -67,8 +96,6 @@ function [resultRects] = searchImage(hog, origImg)
 		[allHistograms, xoffset, yoffset] = getHistogramsForImage(hog, img);
 
 		cellRow = 1;
-			
-		tic();
 		
 		% For each row of the image...
 		while((cellRow + hog.numVertCells - 1) <= size(allHistograms, 1))
