@@ -1,5 +1,24 @@
 function windowCounts = countWindows(hog, img, scaleRange)
-	
+%COUNTWINDOWS Counts the number of possible detection windows in the image.	
+%  For each image scale in 'scaleRange', count the number of unique 
+%  detection windows that fit within the image. This is used simply to
+%  predict the number of windows that will need to be processed in the
+%  image.
+%
+%  Parameters:
+%    hog            - Structure defining a HOG detector.
+%      hog.cellSize - Pixel dimension of a cell (e.g., 8px).
+%      hog.numHorizCells - Number of cells across in the descriptor.
+%      hog.numVertCells  - Number of cells up and down in the descriptor.
+%    img            - The image to be searched.
+%    scaleRange     - Vector containing all scales to be searched.
+%                     e.g., [1.0, 0.95, 0.90, ... ]
+%
+%  Returns:
+%    windowCounts - Vector containing the number of detector windows in
+%                   the image at each of the scales in 'scaleRange'.
+%
+
 	% Get the image dimensions.
     % Make sure to read all three dimensions, or 'origImgWidth' will be 
     % wrong.

@@ -8,6 +8,7 @@ Some things you should know going into this:
 * The HOG detector is compute intense, and this is *not* a highly-optimized implementation.
 * The primary value in this code, I think, is to use it to learn about the HOG detector. 
   * The code is well documented, and Matlab syntax makes the operations fairly plain.
+  * It will be much easier to learn about the detector from this code, I think, than from the optimized OpenCV implementation, for example.
 
 **HOG Tutorial**
 
