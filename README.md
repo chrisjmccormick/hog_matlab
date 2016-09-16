@@ -16,9 +16,14 @@ For a tutorial on the HOG descriptor, check out my [HOG tutorial post](http://m
 
 **Key Source Files**
 
-`getHOGDescriptor.m` - Computes the HOG descriptor for a 66x130 pixel image / detection window. The detection window is actually 64x128 pixels, but an extra pixel is required on all sides for computing the gradients.
+`runSearchExample.m` - Applies a pre-trained HOG detector to a sample validation image, and reports the detector accuracy.
+
+`getHOGDescriptor.m` - Computes the HOG descriptor for a 66x130 pixel image / detection window. The detection window is actually 64x128 pixels, but an extra pixel is required on all sides for computing the gradients (NOTE: The detection window size is actually configurable)
 
 `train_detector.m` - Trains a linear SVM on the ~2.2k pre-cropped windows in the `/Images/Training/` folder.
+
+* The `search` folder contains functions specifically related to searching an image for persons.
+* The `Images` folder contains sample training and validation images.
 
 **Differences with OpenCV Implementation**
 	
