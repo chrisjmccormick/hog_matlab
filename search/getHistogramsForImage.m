@@ -1,4 +1,33 @@
 function [histograms, xoffset, yoffset] = getHistogramsForImage(hog, img)
+%GETHISTOGRAMSFORIMAGE Calculats histograms for ALL cells in an image.
+%  This function is part of a technique for optimizing the process of 
+%  computing HOG descriptors over a search image. If we use a window stride
+%  which is a multiple of the cell size, then we only need to calculate the
+%  histograms for each cell once. Later, during the search process, we
+%  select the cells for a given detection window, then apply block
+%  normalization to create the final descriptor.
+%
+%  Parameters:
+%    hog            - Structure defining the HOG detector. 
+%      hog.cellSize - Pixel dimension of a cell (e.g., 8px).
+%      hog.numBins  - Number of histogram bins to use (e.g., 9).
+%    img            - The input image to be searched.
+%   
+%  Returns:
+%    histograms - 3D matrix of histograms for all cells in the image:
+%                 The first two dimensions index the matrix by cell number,
+%                 and the third dimension contains the histograms.
+%                 For example, the histogram for the cell at (3, 5) is 
+%                 given by histograms(3, 5, :)
+%    xoffset,   - If the image dimensions are not even multiples of the 
+%    yoffset      cell size, then we will first crop the image. We try to
+%                 center the crop window within the image. xoffset and 
+%                 yoffset are the coordinates of the top-left-corner of the
+%                 crop window relative to the original image.
+%
+%    TODO - It would probably be simpler and cleaner to require that all
+%           input images are multiples of the cell size.
+
 
 % =============================
 %       Crop The Image
@@ -10,8 +39,9 @@ function [histograms, xoffset, yoffset] = getHistogramsForImage(hog, img)
 numHorizCells = floor((imgWidth - 2) / hog.cellSize);
 numVertCells = floor((imgHeight - 2) / hog.cellSize);
 
-newWidth = (numHorizCells * 8) + 2;
-newHeight = (numVertCells * 8) + 2;
+% Compute the new image dimensions.
+newWidth = (numHorizCells * hog.cellSize) + 2;
+newHeight = (numVertCells * hog.cellSize) + 2;
 
 % Divide the left-over pixels in half to center the crop region.
 xoffset = round((imgWidth - newWidth) / 2) + 1;

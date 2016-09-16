@@ -19,7 +19,11 @@ function [resultRects] = searchImage(hog, origImg)
 %  is a match if the classifier confidence is above hog.threshold.   
 %
 %  NOTE: This function does not currently support variable detection window
-%        strides. The window is stepped by 1 pixel in each direction.
+%        strides. The window is stepped by 1 cell in each direction. 
+%        Stepping by one cell (as opposed to a smaller number of pixels) 
+%        significantly reduces the number of histograms we must calculate.
+%        The functions 'getHistogramsForImage' and
+%        'getDescriptorFromHistograms' are also built on this assumption.
 %
 %  Parameters:
 %    hog             - Structure defining the HOG detector. 

@@ -1,4 +1,25 @@
 function H = getDescriptorFromHistograms(hog, histograms)
+%GETDESCRIPTORFROMHISTOGRAMS Get descriptor using pre-calculated histograms
+%  This function takes the pre-computed histograms for an image, and
+%  performs the final step, block normalization, to produce the final
+%  descriptor. 
+%
+%  This function is part of a technique for optimizing the process of 
+%  computing HOG descriptors over a search image. If we use a window stride
+%  which is a multiple of the cell size, then we only need to calculate the
+%  histograms for each cell once. During the search process, select the 
+%  cells for a given detection window, then apply block normalization 
+%  (using this function) to create the final descriptor.
+%
+%  Parameters:
+%    hog                 - Structure defining the HOG detector. 
+%      hog.numHorizCells - Number of cells across in the descriptor.
+%      hog.numVertCells  - Number of cells up and down in the descriptor.
+%    histograms          - The histograms for the HOG descriptor.
+%
+%  Returns:
+%    H  - A fully computed HOG descriptor.
+%
 
 % Empty vector to store computed descriptor.
 H = [];

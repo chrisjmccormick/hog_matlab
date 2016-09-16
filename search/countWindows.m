@@ -5,6 +5,9 @@ function windowCounts = countWindows(hog, img, scaleRange)
 %  predict the number of windows that will need to be processed in the
 %  image.
 %
+%  NOTE: This function does not currently support variable detection window
+%        strides. The window is stepped by 1 cell in each direction.
+%
 %  Parameters:
 %    hog            - Structure defining a HOG detector.
 %      hog.cellSize - Pixel dimension of a cell (e.g., 8px).
