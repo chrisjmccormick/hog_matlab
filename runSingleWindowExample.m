@@ -1,3 +1,9 @@
+% runSingleWindowExample.m
+%   This script calculates the HOG descriptor for a single image that has
+%   been cropped down to the detector size. Look at this for learning about
+%   the descriptor by itself (without all of the complexities added by 
+%   actually searching a full image for persons). 
+
 %%
 % Define the default HOG detector parameters (the size of the detection 
 % window and the number of histogram bins).

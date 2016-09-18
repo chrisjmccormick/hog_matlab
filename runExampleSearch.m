@@ -1,3 +1,8 @@
+% runExampleSearch.m
+%   This script applies a pre-trained HOG detector to a sample validation 
+%   image, reports the detector accuracy, and displays the image with true 
+%   positives drawn.
+
 addpath('./common/');
 addpath('./graphics/');
 addpath('./search/');

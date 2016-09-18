@@ -1,3 +1,8 @@
+% trainDetector.m
+%   Trains a linear SVM on the ~2.2k pre-cropped windows in the 
+%   /Images/Training/ folder. There is also already a pre-trained model 
+%   saved in hog_model.mat, so you don't *have* to run this script in order
+%   to play with the other examples.
 
 addpath('./common/');
 addpath('./svm/');
