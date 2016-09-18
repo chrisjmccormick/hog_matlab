@@ -1,4 +1,4 @@
-function index = checkRectOverlap(inRect, compRects)
+function indeces = checkRectOverlap(inRect, compRects, thresh)
 %CHECKRECTOVERLAP Check for overlapping rectangles
 %  This function takes an input rectangle 'inRect' and compares it to all
 %  of the rectanges in 'compRects' to check for overlap.
@@ -6,10 +6,11 @@ function index = checkRectOverlap(inRect, compRects)
 %  The amount of overlap is calculated as the area of intersection divided
 %  by the area of union. If the rectangles are identical, this ratio will
 %  be 1.0. For the purpose of validating results, two rectangles are
-%  considered overlapping if the ratio is greater than 0.5.
+%  generally considered a close enough match if the ratio is greater than 
+%  0.5. This ratio is specified with the 'thresh' parameter.
 %
-%  The input rectangles should be supplied as row vectors with four
-%  columns:
+%  The input rectangles should be supplied as row vectors with the first 
+%  four columns as follows:
 %    [top-left-x, top-left-y, width, height]
 %
 %  The coordinate system is based on a matrix representation of an image,
@@ -17,17 +18,17 @@ function index = checkRectOverlap(inRect, compRects)
 %  increase as you move down and to the right.
 %
 %  Parameters:
-%    inRect    - Input rectangle
-%    compRects - Matrix of rectangles to compare against (one per row).
+%    inRect     - Input rectangle
+%    compRects  - Matrix of rectangles to compare against (one per row).
+%    thresh     - The amount of overlap (0 - 1.0) to consider two
+%                 rectangles to be "overlapping".
 %
 %  Returns:
-%    index - The index (row number) of the first rectangle in compRects 
-%            which sufficiently overlaps the input rectangle. Or, -1 if no 
-%            overlapping rectangles are found.
-%
+%    indeces - The indeces (row numbers) of the matching rectangles. Or, an
+%              empty matrix if none match.
 
-	% Will return -1 if no overlaping rectangle found.
-	index = -1;
+
+	indeces = [];
 
 	% Get the coordinates of the top-left and bottom-right corners
 	% of the rectangle.
@@ -63,10 +64,10 @@ function index = checkRectOverlap(inRect, compRects)
 		% Compute the area of union (the areas of non-overlap plus the area of overlap).
 		unionArea = aArea + bArea - intersectArea;
 		
-		% If the area of overlap exceeds 50%, it's a match.
-		if ((intersectArea / unionArea) > 0.5)
-			index = i;
-			return;
+		% If the area of overlap exceeds 'thresh' (default is 0.5), it's a
+        % match.
+		if ((intersectArea / unionArea) > thresh)
+			indeces = [indeces; i];
 		end
 		
 	end
