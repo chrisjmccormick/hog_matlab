@@ -1,14 +1,14 @@
 # hog_matlab
 Matlab implementation of the HOG person detector. 
 
-I originally created this project to experiment with different ways to modify the descriptor to reduce the dimensionality with minimal loss in accuracy.
+I originally created this project to experiment with different ways to modify the descriptor to reduce the dimensionality with minimal loss in accuracy. This project uses the original descriptor dimensions, though.
 
 Some things you should know going into this:
 
 * The HOG detector is compute intense, and this is *not* a highly-optimized implementation.
 * The primary value in this code, I think, is to use it to learn about the HOG detector. 
   * The code is well documented, and Matlab syntax makes the operations fairly plain.
-  * It will be much easier to learn about the detector from this code, I think, than from the optimized OpenCV implementation, for example.
+  * It will be much easier to learn about the details of the detector from this code, I think, than from the optimized OpenCV implementation, for example.
 
 **HOG Tutorial**
 
@@ -16,14 +16,17 @@ For a tutorial on the HOG descriptor, check out my [HOG tutorial post](http://m
 
 **Key Source Files**
 
-`runSearchExample.m` - Applies a pre-trained HOG detector to a sample validation image, and reports the detector accuracy.
+* `runSingleWindowExample.m` - Calculates the HOG descriptor for a single image that has been cropped down to the detector size. Look at this for learning about the descriptor by itself (without all of the complexities added by actually searching a full image for persons). It leverages the following two functions, which, along with my [tutorial](http://mccormickml.com/2013/05/09/hog-person-detector-tutorial/), are a good way to learn how the descriptor works.
+  * `getHOGDescriptor.m` - Calculates the HOG descriptor for a given detection window.
+  * `getHistogram.m` - Calculates the histogram for a single image cell.
+* `trainDetector.m` - Trains a linear SVM on the ~2.2k pre-cropped windows in the `/Images/Training/` folder. There is also already a pre-trained model saved in `hog_model.mat`, so you don't have to run this function in order to play with the examples.
+* `runSearchExample.m` - Applies a pre-trained HOG detector to a sample validation image, reports the detector accuracy, and displays the image with true positives drawn.
 
-`getHOGDescriptor.m` - Computes the HOG descriptor for a 66x130 pixel image / detection window. The detection window is actually 64x128 pixels, but an extra pixel is required on all sides for computing the gradients (NOTE: The detection window size is actually configurable)
-
-`train_detector.m` - Trains a linear SVM on the ~2.2k pre-cropped windows in the `/Images/Training/` folder.
-
+The project also includes the following subdirectories:
 * The `search` folder contains functions specifically related to searching an image for persons.
+* The `graphics` folder just contains a function for resizing images, and another for plotting detection rectangles.
 * The `Images` folder contains sample training and validation images.
+* The `svm` folder contains everything needed to train a linear SVM.
 
 **Differences with OpenCV Implementation**
 	
