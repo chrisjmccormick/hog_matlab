@@ -23,17 +23,6 @@ function H = getHistogram(magnitudes, angles, numBins)
 %   Returns:
 %     A row vector of length 'numBins' containing the histogram.
 
-% $Author: ChrisMcCormick $    $Date: 2013/12/04 22:00:00 $    $Revision: 1.2 $
-
-% Revision Notes:
-%  v1.2
-%    - Expanded '+=' since this gave Matlab users trouble.
-%  v1.1
-%    - The function was actually hardcoded to 9 bins; it now properly supports
-%      specifying 'numBins'.
-%    - It now returns an unsigned histogram. This has been shown to improve 
-%      accuracy for person detection.
-
 % Compute the bin size in radians. 180 degress = pi.
 binSize = pi / numBins;
 
@@ -81,7 +70,7 @@ rightBinIndex(rightBinIndex == (numBins + 1)) = 1;
 H = zeros(1, numBins);
 
 % For each bin index...
-for (i = 1:numBins)
+for i = 1:numBins
     % Find the pixels with left bin == i
     pixels = (leftBinIndex == i);
         

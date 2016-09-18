@@ -4,6 +4,24 @@ addpath('./svm/');
 addpath('./svm/minFunc/');
 
 %%
+% Define the default HOG detector parameters (the size of the detection 
+% window and the number of histogram bins).
+
+% The number of bins to use in the histograms.
+hog.numBins = 9;
+
+% The number of cells horizontally and vertically.
+hog.numHorizCells = 8;
+hog.numVertCells = 16;
+
+% Cell size in pixels (the cells are square).
+hog.cellSize = 8;
+
+% Compute the expected window size (with 1 pixel border on all sides).
+hog.winSize = [(hog.numVertCells * hog.cellSize + 2), ...
+               (hog.numHorizCells * hog.cellSize + 2)];
+
+%%
 % Load all training windows and get their HOG descriptors.
 
 % Get the list of all images in the directory.
@@ -36,7 +54,7 @@ for i = 1 : length(fileList)
     img = imread(imgFile);
     
     % Calculate the HOG descriptor for the window.
-    H = getHOGDescriptor(img);
+    H = getHOGDescriptor(hog, img);
     
     % Add the descriptor to the rest.
     X_train(i, :) = H';
@@ -45,9 +63,12 @@ end
 fprintf('\n');
 
 %%
-% Train the SVM
+% Train the SVM.
+% Store the resulting weights, theta, in the 'hog' structure.
 fprintf('\nTraining linear SVM classifier...\n');
-theta = train_svm(X_train, y_train, 1.0);
+hog.theta = train_svm(X_train, y_train, 1.0);
+
+save('hog_model.mat', 'hog');
 
 % Evaluate the SVM over the training data.
 p = X_train * theta;

@@ -1,4 +1,4 @@
-function H = getHOGDescriptor(img)
+function H = getHOGDescriptor(hog, img)
 % GETHOGDESCRIPTOR computes a HOG descriptor vector for the supplied image.
 %   H = getHOGDescriptor(img)
 %  
@@ -35,37 +35,12 @@ function H = getHOGDescriptor(img)
 %    - The sequence of values produced by OpenCV does not match the order
 %      of the values produced by this code.
 
-% $Author: ChrisMcCormick $    $Date: 2013/12/04 22:00:00 $    $Revision: 1.2 $
-
-% Revision Notes:
-%  v1.2
-%    - Bug fix: Changed call from 'getUnsHistogram' to 'getHistogram'.
-%    - Replaced 'rows' and 'columns' calls with 'size' for Matlab users.
-%  v1.1
-%    - Changed the 'hy' filter mask to match the OpenCV filter mask (it's now
-%      [-1; 0; 1] instead of [1; 0; -1]).
-%    - Added a required one-pixel border around the image for computing
-%      gradients for the edge pixels.
-
-% The number of bins to use in the histograms.
-numBins = 9;
-
-% The cells are 8 x 8 pixels.
-cellSize = 8;
-
+    
 % Empty vector to store computed descriptor.
 H = [];
 
-% Verify the image size is 66 x 130.
-[height, width] = size(img); 
-if ((width ~= 66) || (height ~= 130))
-    disp('Image size must be 130 x 66 pixels (128x64 with 1px border).\n');
-    return;
-end
-
-% Compute the number cells horizontally and vertically (should be 8 x 16).    
-numHorizCells = 8;
-numVertCells = 16;
+% Verify the input image size matches the HOG parameters.
+assert(isequal(size(img), hog.winSize))
 
 % ===============================
 %    Compute Gradient Vectors
@@ -95,30 +70,27 @@ magnit = ((dy.^2) + (dx.^2)).^.5;
 % into blocks and normalize them later.
 
 % Create a three dimensional matrix to hold the histogram for each cell.
-histograms = zeros(numVertCells, numHorizCells, numBins);
-
-% Cast the image to floating point values.
-img = double(img);
+histograms = zeros(hog.numVertCells, hog.numHorizCells, hog.numBins);
 
 % For each cell in the y-direction...
-for row = 0:(numVertCells - 1)
+for row = 0:(hog.numVertCells - 1)
     
     % Compute the row number in the 'img' matrix corresponding to the top
     % of the cells in this row. Add 1 since the matrices are indexed from 1.
-    rowOffset = (row * cellSize) + 1;
+    rowOffset = (row * hog.cellSize) + 1;
     
     % For each cell in the x-direction...
-    for col = 0:(numHorizCells - 1)
+    for col = 0:(hog.numHorizCells - 1)
     
         % Select the pixels for this cell.
         
         % Compute column number in the 'img' matrix corresponding to the left
         % of the current cell. Add 1 since the matrices are indexed from 1.
-        colOffset = (col * cellSize) + 1;
+        colOffset = (col * hog.cellSize) + 1;
         
         % Compute the indices of the pixels within this cell.
-        rowIndeces = rowOffset : (rowOffset + cellSize - 1);
-        colIndeces = colOffset : (colOffset + cellSize - 1);
+        rowIndeces = rowOffset : (rowOffset + hog.cellSize - 1);
+        colIndeces = colOffset : (colOffset + hog.cellSize - 1);
         
         % Select the angles and magnitudes for the pixels in this cell.
         cellAngles = angles(rowIndeces, colIndeces); 
@@ -126,7 +98,7 @@ for row = 0:(numVertCells - 1)
     
         % Compute the histogram for this cell.
         % Convert the cells to column vectors before passing them in.
-        histograms(row + 1, col + 1, :) = getHistogram(cellMagnitudes(:), cellAngles(:), numBins);
+        histograms(row + 1, col + 1, :) = getHistogram(cellMagnitudes(:), cellAngles(:), hog.numBins);
     end
     
 end
@@ -140,9 +112,9 @@ end
 % be thought of as multiplying every pixel in the block by some coefficient.
 
 % For each cell in the y-direction...
-for row = 1:(numVertCells - 1)    
+for row = 1:(hog.numVertCells - 1)    
     % For each cell in the x-direction...
-    for col = 1:(numHorizCells - 1)
+    for col = 1:(hog.numHorizCells - 1)
     
         % Get the histograms for the cells in this block.
         blockHists = histograms(row : row + 1, col : col + 1, :);
