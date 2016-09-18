@@ -1,8 +1,6 @@
 # hog_matlab
 Matlab implementation of the HOG person detector. 
 
-I originally created this project to experiment with different ways to modify the descriptor to reduce the dimensionality with minimal loss in accuracy. This project uses the original descriptor dimensions, though.
-
 Some things you should know going into this:
 
 * The HOG detector is compute intense, and this is *not* a highly-optimized implementation.
@@ -28,11 +26,18 @@ The project also includes the following subdirectories:
 * The `Images` folder contains sample training and validation images.
 * The `svm` folder contains everything needed to train a linear SVM.
 
+**Result Clustering**
+
+On the image search side, one of the most important things missing here is result clustering. I wrote a [blog post](http://mccormickml.com/2013/11/07/opencv-hog-detector-result-clustering/) on the OpenCV implementation of result clustering, but I haven't taken the time to port any of this over to Matlab yet.  
+
 **Differences with OpenCV Implementation**
-	
+
+The HOG descriptor implemented here is very similar to the original implementation and the one in OpenCV, but there are a few differences:	
 * OpenCV uses L2 hysteresis for the block normalization.
 * OpenCV weights each pixel in a block with a Gaussian distribution before normalizing the block.
 * The sequence of values produced by OpenCV does not match the order of the values produced by this code.
+
+The image search functionality differs in many ways from the OpenCV implementation.
 
 **Order of Values**
 
@@ -51,8 +56,4 @@ block1 = H(1:36);
 % Reshape the values into a 2x2x9 matrix B1.
 B1 = reshape(block1, 2, 2, 9);
 ```
-
-**Send your feedback**
-
-Please let me know if you find any bugs, opportunities for optimization, or any other discrepancies from the original descriptor.
 
