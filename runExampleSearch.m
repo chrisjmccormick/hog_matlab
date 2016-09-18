@@ -1,5 +1,5 @@
 addpath('./common/');
-addpath('./imresize/');
+addpath('./graphics/');
 addpath('./search/');
 
 % Load the pre-configured and pre-trained HOG detector.
@@ -55,27 +55,31 @@ for k = 1 : size(resultRects, 1)
 
     % Check if the result rectangle overlaps any of the good rectangles.
     % It will check the 'required' rectangles first because we sorted the rectangles.
-    index = checkRectOverlap(resultRects(k, :), goodRects);
-
+    indeces = checkRectOverlap(resultRects(k, :), goodRects, 0.5);
+     
     % If we didn't find a match...
-    if (index == -1)
+    if (isempty(indeces))
         % Indicate it's a bad result.
         resultRects(k, end) = 0;
 
         % Increment the number of false positives.
         numFalsePositives = numFalsePositives + 1;
-
-    % If we found a 'required' match...
-    elseif (goodRects(index, 5) == 1)
-        % Indicate it's a good result.
-        resultRects(k, end) = 1;
-
-        % Indicate we found this person.
-        rectsFound(index) = 1;
-        
+    % If we found one or more matches...
     else
-        % Indicate it's an optional result.
-        resultRects(k, end) = -1;
+        % For each of the matches...
+        for i = 1 : length(indeces)
+            % If we found a 'required' match...
+            if (goodRects(i, 5) == 1)
+                % Indicate it's a good result.
+                resultRects(k, end) = 1;
+
+                % Indicate we found this person.
+                rectsFound(i) = 1;
+            else
+                % Indicate it's an optional result.
+                resultRects(k, end) = -1;
+            end
+        end
     end
 
 end
@@ -88,4 +92,31 @@ fprintf('Found %d / %d people (%.2f%%), with %d false positives.\n', ...
         totalVisibleFound, numVisiblePeople, ...
         totalVisibleFound / numVisiblePeople * 100.0, ...
         numFalsePositives);
+
+%%
+% Write out the image with detection hits drawn on it.
+
+% "Plot" the image.
+hold off;
+imagesc(img);
+hold on;
+
+% Draw each of the detection hits.
+for i = 1 : size(resultRects, 1)
+    rect = resultRects(i, :);
     
+    % Use this code to skip over drawing the false positives.
+    % Or, comment it out to draw the false positives as blue rectangles.
+    if rect(end) == 0
+        continue;
+    end
+    
+    color = 'b';
+    % If the match is a good one (or an optional one), color it red.
+    if (rect(end) ~= 0)
+        color = 'r';
+    end
+    
+    % Draw the results.
+    drawRectangle(resultRects(i, :), color);
+end
